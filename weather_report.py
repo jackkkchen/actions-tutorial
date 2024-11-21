@@ -4,9 +4,25 @@ import json
 from bs4 import BeautifulSoup
 import sys
 import io
+import locale
+
+# 设置系统默认编码
+if sys.platform.startswith('win'):
+    # Windows 系统
+    try:
+        locale.setlocale(locale.LC_ALL, 'zh_CN.UTF-8')
+    except locale.Error:
+        try:
+            locale.setlocale(locale.LC_ALL, 'Chinese_China.UTF8')
+        except locale.Error:
+            locale.setlocale(locale.LC_ALL, '')
+else:
+    # 类Unix系统
+    locale.setlocale(locale.LC_ALL, 'zh_CN.UTF-8')
 
 # 设置标准输出编码为 utf-8
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 # 直接定义变量
 APP_ID = "wxee3337b1f84a8bd9"

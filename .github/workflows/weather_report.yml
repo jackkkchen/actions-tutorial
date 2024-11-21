@@ -65,18 +65,22 @@ jobs:
         pip install requests beautifulsoup4 html5lib
       shell: cmd  # Windows 命令行
 
-    # 4. 添加设置编码的步骤
+    # 4. 修改设置编码的步骤
     - name: Set up encoding
       run: |
         chcp 65001
-        echo "设置控制台编码为 UTF-8"
+        set PYTHONIOENCODING=utf-8
+        set PYTHONUTF8=1
       shell: cmd
 
     # 5. 运行天气预报脚本
     - name: 运行天气预报
+      env:
+        PYTHONIOENCODING: utf-8
+        PYTHONUTF8: 1
       run: |
         echo "开始执行天气预报脚本..."
-        python -X utf8 weather_report.py
+        python weather_report.py
         echo "脚本执行完成"
       shell: cmd
 

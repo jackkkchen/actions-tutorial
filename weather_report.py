@@ -11,7 +11,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 # 直接定义变量
 APP_ID = "wxee3337b1f84a8bd9"
 APP_SECRET = "653c58f4f8f83d067c7364bd51835e9a"
-OPEN_ID = "o90ob6QvNAc4xyOC0V1pj_Tnh54k,o90ob6W2x_KzgGd9cY9Erx0A05gI"
+OPEN_ID = "o90ob6QvNAc4xyOC0V1pj_Tnh54k"
 TEMPLATE_ID = "tsqTLBMJT_b_3igmh07DWkf-i_vhskWyhwNlZYxYmHc"
 API_KEY = "9dbb5a4f2e1e0536bc4f7de6e362ca61"
 
@@ -30,18 +30,30 @@ api_key = API_KEY  # 高德 API 密钥
 # weather_template_id = os.environ.get("TEMPLATE_ID")
 # api_key = os.environ.get("API_KEY")  # 高德 API 密钥
 
-def get_current_city():
-    # 使用高德地图 API 获取当前城市
-    url = f"https://restapi.amap.com/v3/ip?key={api_key}"
-    response = requests.get(url)
-    data = response.json()
-    
-    if data['status'] == '1':
-        province = data['province']
-        city = data['city']
-        return city, province
-    else:
-        print(f"获取当前城市失败: {data['info']}")
+
+
+
+def get_current_city(user_id):
+    """根据用户ID获取当前城市"""
+    try:
+        # 使用高德地图 API 获取当前城市
+        url = f"https://restapi.amap.com/v3/ip?key={api_key}"
+        response = requests.get(url)
+        data = response.json()
+        
+        print(f"用户 {user_id} 的高德API返回数据: {data}")
+        
+        if data['status'] == '1' and data.get('city') and data.get('province'):
+            province = data['province']
+            city = data['city']
+            print(f"用户 {user_id} 的城市信息: {province} {city}")
+            return city, province
+        else:
+            print(f"无法获取用户 {user_id} 的位置信息，API返回: {data}")
+            return None, None
+            
+    except Exception as e:
+        print(f"获取用户 {user_id} 的城市信息时出错: {str(e)}")
         return None, None
 
 def get_weather(my_city, my_province):
@@ -138,26 +150,7 @@ def get_weather(my_city, my_province):
     print(f"未找到 {my_city} 的天气信息")
     return None
 
-if __name__ == '__main__':
-    current_city, current_province = get_current_city()
-    if current_city:
-        print(f"当前城市: {current_city}, 当前省份: {current_province}")
-        weather_info = get_weather(current_city, current_province)
-        if weather_info:
-            print(f"天气信息：{weather_info}")
-        else:
-            print("未能获取天气信息")
-    else:
-        print("未能获取当前城市")
-
-# def get_daily_love():
-#     url = "https://api.lovelive.tools/api/SweetNothings/Serialization/Json"
-#     r = requests.get(url)
-#     all_dict = json.loads(r.text)
-#     sentence = all_dict['returnObj'][0]
-#     return sentence
-
-def send_weather(access_token, weather):
+def send_weather(access_token, weather_data=None):
     import datetime
     
     now = datetime.datetime.now()
@@ -173,43 +166,58 @@ def send_weather(access_token, weather):
     else:
         greeting = "晚上好"
 
-    template_data = {
-        "first": {
-            "value": greeting,
-            "color": "#1e90ff"
-        },
-        "date": {
-            "value": f"现在是{today_str} {current_time}",
-            "color": "#173177"
-        },
-        "region": {
-            "value": weather[0],
-            "color": "#173177"
-        },
-        "weather": {
-            "value": weather[2],
-            "color": "#173177"
-        },
-        "temp": {
-            "value": weather[1],
-            "color": "#ff0000"
-        },
-        "wind_dir": {
-            "value": weather[3],
-            "color": "#173177"
-        },
-        "remark": {
-            "value": "愿你拥有美好的一天！",
-            "color": "#1e90ff"
-        }
-    }
-
     # 获取所有用户的 OPEN_ID
     open_id_list = openId.strip().split(',')
     
     for user_id in open_id_list:
+        user_id = user_id.strip()
+        # 获取用户所在城市
+        city, province = get_current_city(user_id)
+        
+        if not city or not province:
+            print(f"未能获取用户 {user_id} 的位置信息，跳过推送")
+            continue
+            
+        # 获取该城市的天气信息
+        weather = get_weather(city, province)
+        
+        if not weather:
+            print(f"未能获取用户 {user_id} 所在城市 {city} 的天气信息")
+            continue
+
+        template_data = {
+            "first": {
+                "value": greeting,
+                "color": "#1e90ff"
+            },
+            "date": {
+                "value": f"现在是{today_str} {current_time}",
+                "color": "#173177"
+            },
+            "region": {
+                "value": weather[0],
+                "color": "#173177"
+            },
+            "weather": {
+                "value": weather[2],
+                "color": "#173177"
+            },
+            "temp": {
+                "value": weather[1],
+                "color": "#ff0000"
+            },
+            "wind_dir": {
+                "value": weather[3],
+                "color": "#173177"
+            },
+            "remark": {
+                "value": "愿你拥有美好的一天！",
+                "color": "#1e90ff"
+            }
+        }
+
         body = {
-            "touser": user_id.strip(),
+            "touser": user_id,
             "template_id": weather_template_id.strip(),
             "url": "https://weather.cma.cn/",
             "data": template_data
@@ -222,12 +230,12 @@ def send_weather(access_token, weather):
             result = response.json()
             
             if result.get('errcode') == 0:
-                print(f"发送成功！用户ID: {user_id}")
+                print(f"发送成功！用户ID: {user_id}, 城市: {city}")
             else:
-                print(f"发送失败！用户ID: {user_id}, 错误码：{result.get('errcode')}, 错误信息：{result.get('errmsg')}")
+                print(f"发送失败！用户ID: {user_id}, 城市: {city}, 错误码：{result.get('errcode')}, 错误信息：{result.get('errmsg')}")
                 
         except Exception as e:
-            print(f"发送请求时出错，用户ID: {user_id}, 错误: {str(e)}")
+            print(f"发送请求时出错，用户ID: {user_id}, 城市: {city}, 错误: {str(e)}")
 
 def get_access_token():
     # 获取access token的url
@@ -239,18 +247,21 @@ def get_access_token():
     return access_token
 
 def weather_report():
-    access_token = get_access_token()
-    current_city, current_province = get_current_city()
+    print("开始执行天气预报程序...")
     
-    if current_city:
-        weather = get_weather(current_city, current_province)
-        if weather:
-            print(f"天气信息：{weather}")
-            send_weather(access_token, weather)
-        else:
-            print("未能获取天气信息")
-    else:
-        print("未能获取当前城市")
+    access_token = get_access_token()
+    if not access_token:
+        print("获取 access_token 失败，终止执行")
+        return
+    print(f"成功获取 access_token")
+    
+    # 直接调用 send_weather，它会处理所有用户
+    send_weather(access_token)
+    
+    print("天气预报程序执行完成")
 
 if __name__ == '__main__':
-    weather_report()
+    try:
+        weather_report()
+    except Exception as e:
+        print(f"程序执行出错: {str(e)}")

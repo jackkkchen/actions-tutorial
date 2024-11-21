@@ -40,8 +40,11 @@ jobs:
     # 环境变量
     env:
       TZ: Asia/Shanghai  # 设置时区
-      PYTHONIOENCODING: utf8  # 添加 Python 编码设置
+      PYTHONIOENCODING: utf-8  # 添加 Python 编码设置
       LANG: zh_CN.UTF-8  # 设置中文环境
+      LANGUAGE: zh_CN.UTF-8
+      LC_ALL: zh_CN.UTF-8
+      PYTHONLEGACYWINDOWSSTDIO: utf-8
 
     # 执行步骤
     steps:
@@ -62,15 +65,22 @@ jobs:
         pip install requests beautifulsoup4 html5lib
       shell: cmd  # Windows 命令行
 
-    # 4. 运行天气预报脚本
+    # 4. 添加设置编码的步骤
+    - name: Set up encoding
+      run: |
+        chcp 65001
+        echo "设置控制台编码为 UTF-8"
+      shell: cmd
+
+    # 5. 运行天气预报脚本
     - name: 运行天气预报
       run: |
         echo "开始执行天气预报脚本..."
-        python weather_report.py
+        python -X utf8 weather_report.py
         echo "脚本执行完成"
       shell: cmd
 
-    # 5. 如果脚本执行失败，输出错误日志
+    # 6. 如果脚本执行失败，输出错误日志
     - name: 输出错误日志
       if: failure()
       run: |

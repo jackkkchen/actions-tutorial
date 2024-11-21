@@ -10,7 +10,8 @@ on:
     # 使用 cron 表达式设置定时任务
     # 格式：'分 时 日 月 星期'
     # UTC 1:00 AM 等于北京时间 9:00 AM (UTC+8)
-    - cron: '0 1 * * *'
+    - cron: '0 1 * * 1-5'  # 工作日 9:00
+    - cron: '0 2 * * 0,6'  # 周末 10:00
   # 允许在 GitHub 网页上手动触发工作流
   workflow_dispatch:
   # 当代码推送到指定分支时触发
@@ -29,7 +30,7 @@ jobs:
     strategy:
       matrix:
         # 定义要测试的操作系统
-        os: [windows-latest, ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
         # 定义要测试的 Python 版本
         python-version: ["3.12"]
         
@@ -39,6 +40,7 @@ jobs:
     # 环境变量
     env:
       TZ: Asia/Shanghai  # 设置时区
+      PYTHONIOENCODING: utf8  # 添加 Python 编码设置
 
     # 执行步骤
     steps:
@@ -61,7 +63,9 @@ jobs:
 
     # 4. 运行天气预报脚本
     - name: 运行天气预报
-      run: python weather_report.py
+      run: |
+        export PYTHONIOENCODING=utf8
+        python -X utf8 weather_report.py
       shell: bash  # 使用 bash shell，确保跨平台兼容
 
     # 5. 如果脚本执行失败，输出错误日志
@@ -73,3 +77,11 @@ jobs:
           cat weather_report.log
         fi
       shell: bash
+
+
+
+# 优化内容：
+# 1. 添加多个城市的天气推送，并可视化地图
+# 2. 链接sqlite，保存天气数据和用户数据；
+# 3. 条件触发：根据天气情况（如雨雪、温度、风力等）触发不同的推送消息；
+# 4. 性能监控：每日发送性能报告，检测key流量数据。

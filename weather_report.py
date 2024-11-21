@@ -2,6 +2,11 @@ import os
 import requests
 import json
 from bs4 import BeautifulSoup
+import sys
+import io
+
+# 设置标准输出编码为 utf-8
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # 直接定义变量
 APP_ID = "wxee3337b1f84a8bd9"

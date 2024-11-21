@@ -15,8 +15,8 @@ on:
   # 允许在 GitHub 网页上手动触发工作流
   workflow_dispatch:
   # 当代码推送到指定分支时触发
-  push:
-    branches: [ "main" ]  # 只在推送到 main 分支时触发
+  # push:
+  #   branches: [ "main" ]  # 只在推送到 main 分支时触发
 
 # 设置工作流的权限
 permissions:

@@ -36,12 +36,18 @@ api_key = API_KEY  # 高德 API 密钥
 def get_current_city(user_id):
     """根据用户ID获取当前城市"""
     try:
-        # 使用高德地图 API 获取当前城市
+        # 检查是否在 GitHub Actions 环境中
+        if os.environ.get('GITHUB_ACTIONS'):
+            # 从环境变量获取城市信息
+            default_city = os.environ.get('DEFAULT_CITY', '珠海市')
+            default_province = os.environ.get('DEFAULT_PROVINCE', '广东省')
+            print(f"GitHub Actions 环境，使用默认城市: {default_province} {default_city}")
+            return default_city, default_province
+            
+        # 本地环境使用高德地图 API
         url = f"https://restapi.amap.com/v3/ip?key={api_key}"
         response = requests.get(url)
         data = response.json()
-        
-        print(f"用户 {user_id} 的高德API返回数据: {data}")
         
         if data['status'] == '1' and data.get('city') and data.get('province'):
             province = data['province']
@@ -49,12 +55,12 @@ def get_current_city(user_id):
             print(f"用户 {user_id} 的城市信息: {province} {city}")
             return city, province
         else:
-            print(f"无法获取用户 {user_id} 的位置信息，API返回: {data}")
-            return None, None
+            print(f"无法获取位置信息，使用默认城市")
+            return "珠海市", "广东省"
             
     except Exception as e:
-        print(f"获取用户 {user_id} 的城市信息时出错: {str(e)}")
-        return None, None
+        print(f"获取城市信息时出错: {str(e)}，使用默认城市")
+        return "珠海市", "广东省"
 
 def get_weather(my_city, my_province):
     # 省份名称到拼音的映射

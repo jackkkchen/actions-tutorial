@@ -27,7 +27,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='repla
 # 直接定义变量
 APP_ID = "wxee3337b1f84a8bd9"
 APP_SECRET = "653c58f4f8f83d067c7364bd51835e9a"
-OPEN_ID = "o90ob6QvNAc4xyOC0V1pj_Tnh54k"
+OPEN_ID = "o90ob6QvNAc4xyOC0V1pj_Tnh54k,o90ob6RMZnjpa26EfcIHQvrqBlh4"
 TEMPLATE_ID = "tsqTLBMJT_b_3igmh07DWkf-i_vhskWyhwNlZYxYmHc"
 API_KEY = "9dbb5a4f2e1e0536bc4f7de6e362ca61"
 
@@ -38,6 +38,14 @@ openId = OPEN_ID
 weather_template_id = TEMPLATE_ID
 api_key = API_KEY  # 高德 API 密钥
 
+# 在文件开头添加用户城市映射
+USER_CITY_MAPPING = {
+    'o90ob6RMZnjpa26EfcIHQvrqBlh4': ('上海', '上海'),
+    'o90ob6VB3Cg0LZJyLTn7-oziGY7w': ('中山市', '广东省'),
+    # 'o90ob6cksje4isH_zyNVlviV-bvo': ('广州市', '广东省'),
+    # 'o90ob6ZqOt8YTYZfrdH3tS0DxZv8': ('广州市', '广东省'),
+    'o90ob6QvNAc4xyOC0V1pj_Tnh54k': ('珠海市', '广东省'),
+}
 
 # 从环境变量获取 API 密钥
 # appID = os.environ.get("APP_ID")
@@ -46,12 +54,15 @@ api_key = API_KEY  # 高德 API 密钥
 # weather_template_id = os.environ.get("TEMPLATE_ID")
 # api_key = os.environ.get("API_KEY")  # 高德 API 密钥
 
-
-
-
 def get_current_city(user_id):
     """根据用户ID获取当前城市"""
     try:
+        # 首先检查用户是否在映射表中
+        if user_id in USER_CITY_MAPPING:
+            city, province = USER_CITY_MAPPING[user_id]
+            print(f"用户 {user_id} 使用映射城市: {province} {city}")
+            return city, province
+            
         # 检查是否在 GitHub Actions 环境中
         if os.environ.get('GITHUB_ACTIONS'):
             # 从环境变量获取城市信息
@@ -112,8 +123,20 @@ def get_weather(my_city, my_province):
         "台湾省": "taiwan"
     }
 
-    # 获取省份的拼音
-    province_pinyin = province_mapping.get(my_province)
+    # 处理直辖市的特殊情况
+    direct_cities = {
+        '上海': 'shanghai',
+        '北京': 'beijing',
+        '天津': 'tianjin',
+        '重庆': 'chongqing'
+    }
+    
+    if my_city.replace('市', '') in direct_cities:
+        province_pinyin = direct_cities[my_city.replace('市', '')]
+    else:
+        # 原有的省份映射逻辑
+        province_pinyin = province_mapping.get(my_province)
+        
     if not province_pinyin:
         print(f"未找到省份 {my_province} 的拼音映射")
         return None
@@ -149,7 +172,7 @@ def get_weather(my_city, my_province):
             for cell in cells:
                 cell_text = list(cell.stripped_strings)
                 if cell_text and my_city.replace("市", "") in cell_text[0]:
-                    # 获取这一行的所有单元格
+                    # 获取这一的所有单元格
                     all_cells = row.find_all("td")
                     
                     try:

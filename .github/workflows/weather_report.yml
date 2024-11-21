@@ -40,3 +40,4 @@ jobs:
         APP_SECRET: ${{ secrets.APP_SECRET }}  # 从 GitHub Secrets 中获取 APP_SECRET
         OPEN_ID: ${{ secrets.OPEN_ID }}  # 从 GitHub Secrets 中获取 OPEN_ID
         TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}  # 从 GitHub Secrets 中获取 TEMPLATE_ID
+        API_KEY: ${{ secrets.API_KEY }}  # 添加 API_KEY 环境变量

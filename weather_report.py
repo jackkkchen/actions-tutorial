@@ -3,28 +3,27 @@ import requests
 import json
 from bs4 import BeautifulSoup
 
+# 直接定义变量
+APP_ID = "wxee3337b1f84a8bd9"
+APP_SECRET = "653c58f4f8f83d067c7364bd51835e9a"
+OPEN_ID = "o90ob6QvNAc4xyOC0V1pj_Tnh54k,o90ob6W2x_KzgGd9cY9Erx0A05gI"
+TEMPLATE_ID = "tsqTLBMJT_b_3igmh07DWkf-i_vhskWyhwNlZYxYmHc"
+API_KEY = "9dbb5a4f2e1e0536bc4f7de6e362ca61"
 
-
-# APP_ID = "wxee3337b1f84a8bd9"
-# APP_SECRET = "653c58f4f8f83d067c7364bd51835e9a"
-# OPEN_ID = "o90ob6QvNAc4xyOC0V1pj_Tnh54k"
-# TEMPLATE_ID = "tsqTLBMJT_b_3igmh07DWkf-i_vhskWyhwNlZYxYmHc"
-# API_KEY = "9dbb5a4f2e1e0536bc4f7de6e362ca61"
-
-# # 使用直接定义的变量
-# appID = APP_ID
-# appSecret = APP_SECRET
-# openId = OPEN_ID
-# weather_template_id = TEMPLATE_ID
-# api_key = API_KEY  # 高德 API 密钥
+# 使用直接定义的变量
+appID = APP_ID
+appSecret = APP_SECRET
+openId = OPEN_ID
+weather_template_id = TEMPLATE_ID
+api_key = API_KEY  # 高德 API 密钥
 
 
 # 从环境变量获取 API 密钥
-appID = os.environ.get("APP_ID")
-appSecret = os.environ.get("APP_SECRET")
-openId = os.environ.get("OPEN_ID")
-weather_template_id = os.environ.get("TEMPLATE_ID")
-api_key = os.environ.get("API_KEY")  # 高德 API 密钥
+# appID = os.environ.get("APP_ID")
+# appSecret = os.environ.get("APP_SECRET")
+# openId = os.environ.get("OPEN_ID")
+# weather_template_id = os.environ.get("TEMPLATE_ID")
+# api_key = os.environ.get("API_KEY")  # 高德 API 密钥
 
 def get_current_city():
     # 使用高德地图 API 获取当前城市
@@ -32,10 +31,7 @@ def get_current_city():
     response = requests.get(url)
     data = response.json()
     
-    print(f"API Response: {data}")  # 输出 API 返回的数据
-    
     if data['status'] == '1':
-        # 直接从返回的数据中获取省份和城市
         province = data['province']
         city = data['city']
         return city, province
@@ -203,44 +199,30 @@ def send_weather(access_token, weather):
         }
     }
 
-    body = {
-        "touser": openId.strip(),
-        "template_id": weather_template_id.strip(),
-        "url": "https://weather.cma.cn/",  # 添加中国气象网链接
-        "data": template_data
-    }
+    # 获取所有用户的 OPEN_ID
+    open_id_list = openId.strip().split(',')
     
-    # 打印完整的请求数据
-    print("\n完整的请求数据：")
-    print(json.dumps(body, ensure_ascii=False, indent=2))
-    
-    url = f'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={access_token}'
-    
-    try:
-        response = requests.post(url, json.dumps(body))
-        result = response.json()
+    for user_id in open_id_list:
+        body = {
+            "touser": user_id.strip(),
+            "template_id": weather_template_id.strip(),
+            "url": "https://weather.cma.cn/",
+            "data": template_data
+        }
         
-        print("\n请求URL:", url)
-        print("HTTP状态码:", response.status_code)
-        print("响应头:", dict(response.headers))
-        print("响应内容:", json.dumps(result, ensure_ascii=False, indent=2))
+        url = f'https://api.weixin.qq.com/cgi-bin/message/template/send?access_token={access_token}'
         
-        if result.get('errcode') == 0:
-            print("发送成功！")
-        else:
-            print(f"发送失败！错误码：{result.get('errcode')}, 错误信息：{result.get('errmsg')}")
+        try:
+            response = requests.post(url, json.dumps(body))
+            result = response.json()
             
-            # 检查模板ID
-            print(f"\n当前使用的模板ID: {weather_template_id}")
-            print("请确认该ID与微信公众平台的模板ID是否一致")
-            
-            # 检查数据字段
-            print("\n模板数据字段检查:")
-            for key in template_data:
-                print(f"- {key}: {template_data[key]['value']}")
-            
-    except Exception as e:
-        print(f"发送请求时出错: {str(e)}")
+            if result.get('errcode') == 0:
+                print(f"发送成功！用户ID: {user_id}")
+            else:
+                print(f"发送失败！用户ID: {user_id}, 错误码：{result.get('errcode')}, 错误信息：{result.get('errmsg')}")
+                
+        except Exception as e:
+            print(f"发送请求时出错，用户ID: {user_id}, 错误: {str(e)}")
 
 def get_access_token():
     # 获取access token的url

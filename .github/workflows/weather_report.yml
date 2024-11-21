@@ -30,7 +30,7 @@ jobs:
     strategy:
       matrix:
         # 定义要测试的操作系统
-        os: [ubuntu-latest]
+        os: [windows-latest]
         # 定义要测试的 Python 版本
         python-version: ["3.12"]
         
@@ -41,6 +41,7 @@ jobs:
     env:
       TZ: Asia/Shanghai  # 设置时区
       PYTHONIOENCODING: utf8  # 添加 Python 编码设置
+      LANG: zh_CN.UTF-8  # 设置中文环境
 
     # 执行步骤
     steps:
@@ -59,24 +60,23 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install requests beautifulsoup4 html5lib
-      shell: bash  # 使用 bash shell，确保跨平台兼容
+      shell: cmd  # Windows 命令行
 
     # 4. 运行天气预报脚本
     - name: 运行天气预报
       run: |
-        export PYTHONIOENCODING=utf8
-        python -X utf8 weather_report.py
-      shell: bash  # 使用 bash shell，确保跨平台兼容
+        echo "开始执行天气预报脚本..."
+        python weather_report.py
+        echo "脚本执行完成"
+      shell: cmd
 
     # 5. 如果脚本执行失败，输出错误日志
     - name: 输出错误日志
       if: failure()
       run: |
         echo "执行失败，查看错误信息"
-        if [ -f weather_report.log ]; then
-          cat weather_report.log
-        fi
-      shell: bash
+        if exist weather_report.log type weather_report.log
+      shell: cmd
 
 
 

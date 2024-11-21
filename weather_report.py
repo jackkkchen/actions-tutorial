@@ -28,7 +28,7 @@ api_key = os.environ.get("API_KEY")  # 高德 API 密钥
 
 def get_current_city():
     # 使用高德地图 API 获取当前城市
-    url = f"https://restapi.amap.com/v3/ip?key={API_KEY}"
+    url = f"https://restapi.amap.com/v3/ip?key={api_key}"
     response = requests.get(url)
     data = response.json()
     

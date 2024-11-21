@@ -1,0 +1,42 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: 天气预报推送  # 定义工作流的名称
+
+on:
+  schedule:  # 定义触发工作流的时间
+    # 设置启动时间，为 UTC 时间, UTC23点 对应北京时间早7点
+    - cron: '00 23 * * *'  # 每天 UTC 时间 23:00 触发
+  workflow_dispatch:  # 允许手动触发工作流
+
+permissions:
+  contents: read  # 设置权限，允许读取内容
+
+jobs:
+  build:  # 定义一个名为 build 的作业
+
+    runs-on: ubuntu-latest  # 指定作业运行的环境为最新的 Ubuntu
+    env:
+      TZ: Asia/Shanghai  # 设置时区为上海
+
+    steps:  # 定义作业中的步骤
+    - uses: actions/checkout@v3  # 检出代码库的最新版本
+
+    - name: Set up Python 3.12  # 设置 Python 3.12 环境
+      uses: actions/setup-python@v3  # 使用 GitHub 提供的设置 Python 的动作
+      with:
+        python-version: "3.12"  # 指定要安装的 Python 版本
+
+    - name: Install dependencies  # 安装依赖项
+      run: |  # 运行以下命令
+        python -m pip install --upgrade pip  # 升级 pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi  # 如果存在 requirements.txt 文件，则安装其中的依赖
+
+    - name: Run weather Report  # 运行天气报告脚本
+      run: |  # 运行以下命令
+        python weather_report.py  # 执行天气报告的 Python 脚本
+      env:  # 设置环境变量
+        APP_ID: ${{ secrets.APP_ID }}  # 从 GitHub Secrets 中获取 APP_ID
+        APP_SECRET: ${{ secrets.APP_SECRET }}  # 从 GitHub Secrets 中获取 APP_SECRET
+        OPEN_ID: ${{ secrets.OPEN_ID }}  # 从 GitHub Secrets 中获取 OPEN_ID
+        TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}  # 从 GitHub Secrets 中获取 TEMPLATE_ID

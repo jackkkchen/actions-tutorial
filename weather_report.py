@@ -27,7 +27,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='repla
 # 直接定义变量
 APP_ID = "wxee3337b1f84a8bd9"
 APP_SECRET = "653c58f4f8f83d067c7364bd51835e9a"
-OPEN_ID = "o90ob6QvNAc4xyOC0V1pj_Tnh54k,o90ob6RMZnjpa26EfcIHQvrqBlh4"
+OPEN_ID = "o90ob6QvNAc4xyOC0V1pj_Tnh54k,o90ob6VB3Cg0LZJyLTn7-oziGY7w"
 TEMPLATE_ID = "tsqTLBMJT_b_3igmh07DWkf-i_vhskWyhwNlZYxYmHc"
 API_KEY = "9dbb5a4f2e1e0536bc4f7de6e362ca61"
 
@@ -40,7 +40,7 @@ api_key = API_KEY  # 高德 API 密钥
 
 # 在文件开头添加用户城市映射
 USER_CITY_MAPPING = {
-    'o90ob6RMZnjpa26EfcIHQvrqBlh4': ('上海', '上海'),
+    # 'o90ob6RMZnjpa26EfcIHQvrqBlh4': ('上海', '上海'),
     'o90ob6VB3Cg0LZJyLTn7-oziGY7w': ('中山市', '广东省'),
     # 'o90ob6cksje4isH_zyNVlviV-bvo': ('广州市', '广东省'),
     # 'o90ob6ZqOt8YTYZfrdH3tS0DxZv8': ('广州市', '广东省'),

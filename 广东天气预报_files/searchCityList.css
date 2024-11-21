@@ -1,0 +1,252 @@
+.city-box-province {
+    background: #fff none repeat scroll 0 0;
+    /*border: 1px solid #abaeaf;*/
+    /*box-shadow: 4px 1px 9px -3px #888;*/
+    display: none;
+    height: auto;
+    left: 0;
+    overflow: hidden;
+    /*position: absolute;*/
+    top:auto;
+    width: 400px;
+    z-index: 13;
+}
+.city-box-province .province-top{
+    width:100%;
+    height:30px;
+    line-height:30px;
+    /*border-bottom: 1px dotted #ccc;*/
+}
+.city-box-province .province-top .province-back{
+    float:left;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: "Microsoft Yahei";
+    color: #2270BE;
+    letter-spacing:1px;
+}
+.city-box-province .province-top .province-level{
+    float:left;
+    /*margin-left:10px;*/
+    cursor: pointer;
+    font-size: 12px;
+    font-family: "Microsoft Yahei";
+    color: #2270BE;
+    letter-spacing:1px;
+}
+.city-box-province .province-top .proGoback{
+    float: left;
+    margin-left:20px;
+    width: 50%;
+}
+.city-box-province .province-top .proGoback:hover{
+    color:#f68D3B
+}
+.city-box-province .province-top .province-area{
+    float:right;
+    margin-right:20px;
+    color: #6f6f6f;
+    font-size: 12px;
+    font-family: "Microsoft Yahei";
+    letter-spacing:1px;
+}
+.w_city_province {
+    clear: both;
+    overflow: hidden;
+    /*padding: 10px 0;*/
+}
+
+.w_city_province dl {
+    float: left;
+    height: auto;
+    margin: 0 auto 0 4px;
+    width: 364px;
+
+}
+.w_city_province dl dd {
+    float: right;
+    width: 350px;
+
+}
+.w_city_province dl dd a {
+    color: #6f6f6f;
+    font-size: 12px;
+    overflow-wrap: break-word;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    margin-bottom: 7px;
+    padding: 0;
+    text-align: left;
+    width: 70px;
+}
+.w_city_province dl dd a:hover{
+    color: #f68D3B
+}
+
+
+.city-box {
+    top:auto;
+    width: auto;
+
+}
+.city-box .city-tt {
+    clear: both;
+    position: relative;
+    overflow: hidden;
+    background: #fff;
+    /* background: #f6fcff url(https://i.tq121.com.cn/i/weather2015/city/bj-dian.png) repeat-x left bottom; */
+}
+
+.city-box .city-tt a {
+    width: 40px;
+    overflow: hidden;
+    display: block;
+    float: left;
+    border-right: 0px solid #fff;
+    border-bottom: 1px solid #fff;
+    font-size: 16px;
+    text-align: center;
+    background: #fff;
+    color: #252525;
+    line-height: 30px;
+    margin: 10px 30px auto 20px;
+    font-family: "Microsoft Yahei";
+
+
+}
+
+.city-box .city-tt a.cur {
+
+    color: #f68D3B;
+    border-bottom: 3px solid #f68D3B;
+    font-weight:bold;
+    opacity:1;
+}
+
+.w_city .category{
+    font-size: 12px;
+    font-family: "Microsoft Yahei";
+    color: #2270BE;
+    letter-spacing:1px;
+    display: inline;
+    height: 30px;
+    line-height: 30px;
+    margin-left: 8px;
+}
+
+.city_guonei dl dd {
+    margin-left: 10px;
+    width: auto;
+    float: left;
+}
+.city_guonei dl dd a{
+    font-size: 14px;
+    color: #6F6F6F;
+    overflow: hidden;
+}
+.w_city a {
+    width: 59px;
+    padding-right: 2px;
+}
+
+.city_guonei .gn .diq .category{
+    padding: 15px 10px;
+    color: #2270BE;
+}
+
+.city_guonei dl {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    width: auto;
+    margin: 0 12px 8px;
+}
+.city_guonei dl:nth-last-child(2) {
+    border-bottom: 0px solid #ccc;
+    margin-bottom: 0;
+}
+
+.city_guonei .w_city_province dl {
+    border-bottom: 0px solid #ccc;
+
+}
+
+#searchCityProvince {
+    border-bottom: 0px solid #ccc;
+    margin-bottom: 0;
+}
+.city_guonei dl dd.diq a {
+    width: 59px;
+}
+
+.w_city {
+    padding: 0px;
+}
+
+#show{
+    top:auto;
+    width: 100%;
+    box-shadow: 0px 2px 8px 0px #888;
+}
+#show ul {
+    border: 0px solid #fff;
+}
+.city_guonei dl dd.jind a {
+
+    padding-right: 12px;
+}
+.city_guonei dl.qcode {
+    height: 49px;
+    line-height: 49px;
+    border: 0;
+}
+
+#show .qcode {
+    margin:10px;
+}
+.w_city_province dl {
+    width: auto;
+    margin-bottom: 0;
+}
+.w_city_province dl dd {
+    width: auto;
+    margin-left: 10px;
+}
+
+.w_city_province dl dd a {
+    width: 59px;
+}
+.search {
+    border:1px solid #cad1d8;
+    background: #fff;
+}
+.searchcur{
+    border:1px solid #2270BE;
+}
+.search input#txtZip {
+    padding-left: 12px;
+}
+
+.search .input-btn {
+    background: #2270BE;
+    padding: 9px 12px;
+    right: 0px;
+    top: 0px;
+}
+
+.city-box {
+    box-shadow: 0px 2px 8px 0px #888;
+    border: 0px solid #abaeaf;
+}
+
+#show ul span {
+    padding-top: 10px;
+    height: 30px;
+    line-height: 30px;
+    background: url(https://i.tq121.com.cn/i/weather2015/index/smile.jpg) no-repeat 10px 13px;
+}
+
+#show li {
+    height: 40px;
+    line-height: 40px;
+}
